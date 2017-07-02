@@ -11,15 +11,22 @@
 
  	<link href="/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" />
     <script src="/js/jquery.min.js" type="text/javascript"></script>
+    <link href="/css/index.css" rel="stylesheet">
 
     
   </head>
 
-  <body>
 
-	
-		
-		
+  <body class="background text-white">
+    <div class="centered"> SMART MIRROR </div>
+    <img class="img-responsive" src="/img/<%= weatherImg %>" alt="">
+    <br>
+    현재 기온: <%= temp %>
+    강수 확률: <%= rainPro %>
+    <br>
+    습도: <%= wetPercent %>
+    최저 기온: <%= minTemp %>
   </body>
   
+ 
 </html>
