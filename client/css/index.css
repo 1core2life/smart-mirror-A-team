@@ -11,3 +11,11 @@
   text-align: center;
   font-size: 40px;
 }
+.time {
+ width:600px;
+ height:250px;
+ line-height:250px;
+ color:#FFFFFF;
+ font-size:100px;
+ text-align:center;
+}
