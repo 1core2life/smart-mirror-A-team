@@ -72,9 +72,6 @@ exports.realTimeWeather = function(xPos,yPos,res) {
       temperature = totalInfo["response"]["body"]["items"]["item"][6]["fcstValue"]; //temper
       minTemp = totalInfo["response"]["body"]["items"]["item"][7]["fcstValue"];
   
-      console.log("강수확률"+rainProbability+"강수형태"+rainForm+
-      "습도"+wetPercent+"기후"+skyForm+"온도"+temperature+"최저온도"+minTemp);
-    
       var weatherImg;
       
       if(skyForm == 0)

@@ -6,6 +6,7 @@ var express = require('express');
 var fs = require('fs');
 var weather = require('./weather');
 var bodyParser = require('body-parser');
+var busntrail = require('./busntrail');
 
 
 var router = express();
@@ -26,7 +27,12 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
         res.render('tempSet');  //location setting temp page
     });
     
- router.post('/myPosition', function(req, res){
+  router.post('/searchStationNum', function(req, res){
+        var stationName = req.body.stationName;
+        busntrail.searchBus(res,stationName);  //location setting temp page
+    });  
+    
+  router.post('/myPosition', function(req, res){
         var xPos ,yPos;
         var userDongName =req.body.userDongName;
         var data = fs.readFileSync('positionFile', 'utf8') .split('\n');

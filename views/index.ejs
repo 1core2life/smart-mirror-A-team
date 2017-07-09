@@ -29,9 +29,62 @@
     최저 기온: <%= minTemp %>
     <br>
     <%= userStyle %>
+    <br>
+    <input type="text" name = "stationName">
+    <button type="submit" id = "search">submit</button>
+    <div id="busWaitingReturn"></div>
+    
   </body>
   
   <script>
+
+  $(document).ready(function(){
+
+      $("#search").click(function(){
+
+          $.ajax({ 
+
+        	type :'post',
+
+        	data :{
+
+        		stationName : $('input[name="stationName"]').val(),
+
+        	},  
+
+	        url : '/searchStationNum',
+
+	        dataType : 'json',
+
+	        success: whenSuccess,
+
+	        error: whenError
+
+     	    });
+
+      });
+
+    });
+
+    function whenSuccess(retdata){
+      var result= '';
+      var index = 0;
+    	$.each(retdata.busNum, function(){
+    	  if( !retdata.predictTime[index] )
+    	    {
+    	      result += retdata.busNum[index++] +'번 버스는 차고지 대기 중 입니다. <br>';
+    	      return true;
+    	    }
+    	  result += retdata.busNum[index] +'번 버스 도착 '+ retdata.predictTime[index++] +'분 전 <br>';
+      });
+      $("#busWaitingReturn").html(result);
+    }
+
+    function whenError(){
+        alert("Error");
+    }
+
+
 
   function printClock() {
       
