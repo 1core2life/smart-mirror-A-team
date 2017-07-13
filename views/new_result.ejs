@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+	<head>
+		<title>SMARTMIRROR</title>
+		<script src="news.js" type="text/javascrpit" charset="utf-8"></script>
+	</head>
+	<body>
+		<% for (var i = 0; i < news.length; i++) { %>
+
+    	<h3>뉴스 타이틀: <%= news[i] %></h3>
+		<p>언론사: <%= writer[i] %></p>
+		<% } %>
+
+	</body>
+</html>

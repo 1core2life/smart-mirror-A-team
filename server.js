@@ -1,5 +1,3 @@
-//main server process
-
 var http = require('http');
 var path = require('path');
 var express = require('express');
@@ -7,9 +5,14 @@ var fs = require('fs');
 var weather = require('./weather');
 var bodyParser = require('body-parser');
 var busntrail = require('./busntrail');
-
+var music=require('./music');
+var news=require('./news');
+var ejs=require('ejs');
 
 var router = express();
+var content = fs.readFileSync('./views/tempSet.ejs', 'utf-8');
+var compiled = ejs.compile(content);
+
 var server = http.createServer(router);
 router.use(express.static(path.resolve(__dirname, 'client')));
 router.use(bodyParser.json());
@@ -45,4 +48,11 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
             }
         }
     });
-//--------------------------------------------------------------------------------------------------------------
+ router.post('/music', function(req, res){
+        var musicName = req.body.musicname;
+	    music.searchMusic(res,musicName);
+    });  
+ router.post('/news', function(req, res){
+	 
+         news.news_result(res);
+    });  

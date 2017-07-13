@@ -37,35 +37,20 @@
   </body>
   
   <script>
-
   $(document).ready(function(){
-
       $("#search").click(function(){
-
           $.ajax({ 
-
         	type :'post',
-
         	data :{
-
         		stationName : $('input[name="stationName"]').val(),
-
         	},  
-
 	        url : '/searchStationNum',
-
 	        dataType : 'json',
-
 	        success: whenSuccess,
-
 	        error: whenError
-
      	    });
-
       });
-
     });
-
     function whenSuccess(retdata){
       var result= '';
       var index = 0;
@@ -79,16 +64,11 @@
       });
       $("#busWaitingReturn").html(result);
     }
-
     function whenError(){
         alert("Error");
     }
-
-
-
   function printClock() {
       
-
       var clock = document.getElementById("clock");
       var currentDate = new Date();
       var calendar = currentDate.getFullYear() + "-" + (currentDate.getMonth()+1) + "-" + currentDate.getDate()
@@ -105,7 +85,6 @@
       
       setTimeout("printClock()",1000);
   }
-
   function addZeros(num, digit) {
   	  var zero = '';
   	  num = num.toString();
@@ -116,7 +95,6 @@
   	  }
   	  return zero + num;
   }
-
 </script>
  
 </html>
