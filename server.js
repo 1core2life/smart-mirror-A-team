@@ -24,7 +24,13 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
   console.log("sever started .. port"+ ": " + addr.port);
 });
-
+  
+  router.get('/voicecall', function(req, res){
+   
+        res.render('rtccall');  //location setting temp page
+    });
+    
+    
   router.get('/', function(req, res){
    
         res.render('tempSet');  //location setting temp page
@@ -35,11 +41,11 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
         busntrail.searchBus(res,stationName);  //location setting temp page
     });  
     
-  router.post('/myPosition', function(req, res){
+  router.get('/myPosition', function(req, res){
         var xPos ,yPos;
-        var userDongName =req.body.userDongName;
+        var userDongName =req.param("userDongName");
         var data = fs.readFileSync('positionFile', 'utf8') .split('\n');
-        
+
         for(var i in data){
            if (data[i].indexOf(userDongName) > -1) {
              xPos = data[i].toString().substring(23,30).replace(/\s/gi,'');//24th xpos   27 ypos..

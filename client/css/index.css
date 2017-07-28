@@ -19,3 +19,15 @@
  font-size:100px;
  text-align:center;
 }
+.local-video {
+ width: 420px;
+ height: 340px;
+ margin-right :70px;
+
+}
+.remote-video {
+ margin-top: 20px;
+ margin-bottom: 20px;
+ width: 420px;
+ height: 340px;
+}

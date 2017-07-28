@@ -31,9 +31,12 @@
     <%= userStyle %>
     <br>
     <input type="text" name = "stationName">
-    <button type="submit" id = "search">submit</button>
-    <div id="busWaitingReturn"></div>
+    <button type="submit" id = "search">검색</button>
     
+    <div id="busWaitingReturn"></div>
+    <form action="/voicecall" method="get">
+      <button type="submit" id = "voiceCall">통화 모드</button>
+    </form>
   </body>
   
   <script>

@@ -2,7 +2,6 @@ exports.realTimeWeather = function(xPos,yPos,res) {
     
     var request = require('request');
 
-
     var today = new Date;
     var week = new Array('일','월','화','수','목','금','토');
     var year = today.getFullYear();
@@ -28,7 +27,7 @@ exports.realTimeWeather = function(xPos,yPos,res) {
     
     // 9 -> 09
     
-    if(hours > 10 ) {
+    if(hours >= 10 ) {
         hours = '08';
     }
     else if(hours < 10) {
@@ -59,12 +58,13 @@ exports.realTimeWeather = function(xPos,yPos,res) {
     var skyForm;
     var temperature;
     var minTemp; 
-    
+
     request({
     url: ForecastGribURL,
     method: 'GET'
     }, function (error, response, body) {
      var totalInfo = JSON.parse(body);
+
       rainProbability = totalInfo["response"]["body"]["items"]["item"][0]["fcstValue"];  //probability of rain
       rainForm = totalInfo["response"]["body"]["items"]["item"][1]["fcstValue"]; // no[0] , rain[1], rain/snow[2], snow [3]
       wetPercent = totalInfo["response"]["body"]["items"]["item"][3]["fcstValue"];  //wet percentage
