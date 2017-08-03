@@ -75,13 +75,29 @@ exports.realTimeWeather = function(xPos,yPos,res) {
       var weatherImg;
       
       if(skyForm == 0)
-        weatherImg = 'sun.png';
+        {
+            weatherImg = 'sun.png';
+            if(rainForm == 1)
+                weatherImg = 'rainsun.png';
+      }
       else if(skyForm == 1)
-        weatherImg = 'alittlecloud.png';
+        {
+            weatherImg = 'alittlecloud.png';
+            if(rainForm != 0)
+                weatherImg = checkRain(rainForm);
+      }
       else if(skyForm == 2)
-        weatherImg = 'lotsofclound.png';
+        {
+            weatherImg = 'lotsofcloud.png';
+            if(rainForm != 0)
+                weatherImg = checkRain(rainForm);
+      }
       else
-        weatherImg = 'heurim.png';
+        {
+            weatherImg = 'heurim.png';
+            if(rainForm != 0)
+                weatherImg = checkRain(rainForm);
+      }    
     
       var userStyle;
       switch(checkStyle(temperature)){
@@ -122,6 +138,15 @@ exports.realTimeWeather = function(xPos,yPos,res) {
       });
     });
    
+}
+
+function checkRain(rainForm){
+    if(rainForm == 1)
+      return 'rain.png';
+    else if(rainForm == 2)
+      return 'rainsnow.png';
+    else if(rainForm == 3)
+      return 'snow.png';
 }
 
 function checkStyle(temperature){
