@@ -6,9 +6,30 @@
   <meta charset="utf-8">
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/index.css" rel="stylesheet">
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js'></script>
 
 </head>
+<script>
 
+    if(annyang){
+            //명령 포맷
+	    var commands = { 
+	         '끝내기' : function(){
+	           window.history.back();
+	         }
+	             };
+            annyang.addCommands(commands);
+            annyang.setLanguage('ko');
+
+	    //명령어가 아닌 말 들어왔을때
+           // annyang.addCallback('resultNoMatch',function(){
+             //    alert('아직 나는 "hello" 밖에 못알아먹습니다!')
+						//										            }
+					//									                    );
+	    annyang.start();
+																		            }                                      
+				
+</script>
 <body class="background text-white">
   <div class="container">
     <div class="row">

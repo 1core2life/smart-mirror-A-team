@@ -17,20 +17,63 @@
 
     if(annyang){
             //명령 포맷
+
 	    var commands = { 
 	        '안녕' : function(){
-	         alert('Hello world!');}
-	             };
-            annyang.addCommands(commands);
-            annyang.setLanguage('ko');
+	         alert('Hello world!');
+	        },
+	         '명령어' : function(){
+	         $(".menu>a").trigger("click");
+	         },
+	         '통화모드' : function(){
+	         $("#voiceCall").trigger("click");
+	         },
+	         '명령어 닫기' : function(){
+	         $(".menu>a").trigger("click");
+	         }
+	     };
+       annyang.addCommands(commands);
+       annyang.setLanguage('ko');
 
 	    //명령어가 아닌 말 들어왔을때
-            annyang.addCallback('resultNoMatch',function(){
-                 alert('아직 나는 "hello" 밖에 못알아먹습니다!')
-																            }
-														                    );
+      // annyang.addCallback('resultNoMatch',function(){
+      //      alert('아직 나는 "hello" 밖에 못알아먹습니다!');
+			//});
+	    annyang.addCallback('result', function(phrases) {
+	      console.log(phrases[0]);
+        if( phrases[0].indexOf("반대") != -1){
+          document.getElementsByName("busDes")[0].value = '1';
+
+        }
+        else if( phrases[0].indexOf("반 대") != -1){
+          document.getElementsByName("busDes")[0].value = '1';        
+        }
+        else
+          document.getElementsByName("busDes")[0].value = '0';    
+          
+        if(phrases[0].indexOf("버 스") != -1){
+          var inputText =phrases[0];
+          inputText = inputText.replace('버스','');
+          inputText = inputText.replace('버 스','');
+          inputText = inputText.replace('반대','');
+          inputText = inputText.replace('반 대','');
+          
+          document.getElementsByName("stationName")[0].value = inputText.replace(/ /g, '');
+          $("#search").trigger("click");
+        }
+        else if(phrases[0].indexOf("버스") != -1 ){
+         var inputText =phrases[0];
+          inputText = inputText.replace('버스','');
+          inputText = inputText.replace('버 스','');
+          inputText = inputText.replace('반대','');
+          inputText = inputText.replace('반 대','');
+          
+          document.getElementsByName("stationName")[0].value = inputText.replace(/ /g, '');
+          $("#search").trigger("click");
+        }    
+      });
 	    annyang.start();
-																		            }                                      
+		}                                      
 				
     </script>
 
@@ -62,14 +105,15 @@
     <br>
     <%= userStyle %>
     <hr class="line-width">
-    <input type="text" name = "stationName"  placeholder="정류장 이름을 입력">
-    <button type="submit" id = "search">검색</button>
+    <input type="text" name = "stationName"  placeholder="정류장 이름을 입력" style="display: none;">
+    <input type="text" name = "busDes" style="display: none;">
+    <button type="submit" id = "search" style="display: none;">검색</button>
         
     <div id="busWaitingReturn"></div>
     
     <hr class="line-width">
     <form action="/voicecall" method="get">
-      <button type="submit" id = "voiceCall">통화 모드</button>
+      <button type="submit" id = "voiceCall" style="display: none;">통화 모드</button>
     </form>
     
     <div class="panel panel-default panel-height">
@@ -100,7 +144,7 @@
      
      <div>
       <ul>
-        <li class="menu">
+        <li class="menu centered-bottom">
             <a><img src="" alt="명령어 목록"/></a>
             <ul class="hide">
                 <li>스타일 추천</li>
@@ -127,10 +171,12 @@
   <script>
   $(document).ready(function(){
       $("#search").click(function(){
+        console.log($('input[name="stationName"]').val() + "AA" + $('input[name="busDes"]').val() );
           $.ajax({ 
         	type :'post',
         	data :{
         		stationName : $('input[name="stationName"]').val(),
+        		busDes :  $('input[name="busDes"]').val()
         	},  
 	        url : '/searchStationNum',
 	        dataType : 'json',
@@ -161,7 +207,7 @@
     	      result += retdata.busNum[index++] +'번 버스는 차고지 대기 중 입니다. <br>';
     	      return true;
     	    }
-    	  result += retdata.busNum[index] +'번 버스 도착 '+ retdata.predictTime[index++] +'분 전 <br>';
+    	  result += retdata.busNum[index] +'번 버스 도착 '+ retdata.predictTime[index] +'분 전 ' + retdata.routeDestName[index++] +'방면 <br>' ;
       });
       $("#busWaitingReturn").html(result);
     }

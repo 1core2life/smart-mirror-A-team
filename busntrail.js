@@ -1,4 +1,4 @@
-exports.searchBus = function(res,stationName) {
+exports.searchBus = function(res,stationName,busDes) {
     
     var request = require('request');
     var cheerio = require('cheerio');
@@ -21,15 +21,16 @@ exports.searchBus = function(res,stationName) {
         }
       // here, 0~ n th check from user , then input num
       // untill input system made, use 0 input
-      SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId="+array["stationId"][0]+"&osInfoType=M";
+      SearchStationNum = "http://m.gbis.go.kr/search/getBusStationArrival.do?stationId="+array["stationId"][busDes]+"&osInfoType=M";
         request({
         url: SearchStationNum,
         method: 'GET'
         }, function(err, response, body) {
             var totalInfo2 = JSON.parse(body);
-            var array2 = {"busNum": [], "predictTime": []};
+            var array2 = {"busNum": [], "predictTime": [], "routeDestName": []};
         
             for( var i in totalInfo2["busStationArrivalInfo"]["arrivalList"]){
+                array2["routeDestName"][i] = totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeDestName"];
                 array2["busNum"][i] = totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["routeName"];
                 array2["predictTime"][i] = totalInfo2["busStationArrivalInfo"]["arrivalList"][i]["predictTime1"];
             }

@@ -38,7 +38,8 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
     
   router.post('/searchStationNum', function(req, res){
         var stationName = req.body.stationName;
-        busntrail.searchBus(res,stationName);  //location setting temp page
+        var busDes = req.body.busDes;
+        busntrail.searchBus(res,stationName,busDes);  //location setting temp page
     });  
     
   router.get('/myPosition', function(req, res){
@@ -47,6 +48,10 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
         var data = fs.readFileSync('positionFile', 'utf8') .split('\n');
 
         for(var i in data){
+           if(!userDongName){
+             weather.realTimeWeather(0,0,res);
+             break;
+           }
            if (data[i].indexOf(userDongName) > -1) {
              xPos = data[i].toString().substring(23,30).replace(/\s/gi,'');//24th xpos   27 ypos..
              yPos = data[i].toString().substr(30).replace(/\s/gi,'');

@@ -11,6 +11,11 @@
   text-align: center;
   font-size: 40px;
 }
+.centered-bottom {
+  position:absolute; 
+  bottom:0px;
+  text-align: center;
+}
 .time {
  width:600px;
  height:250px;
