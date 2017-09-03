@@ -1,8 +1,7 @@
 exports.searchBus = function(res,stationName,busDes) {
     
     var request = require('request');
-    var cheerio = require('cheerio');
-    
+
     var urlencode = require('urlencode');
     var EncodedName = urlencode(stationName);
     
@@ -40,5 +39,35 @@ exports.searchBus = function(res,stationName,busDes) {
 	        res.end(renderingJson);
 
         });
+    });
+}
+
+exports.searchTrain = function(res,stationName) {
+    
+    var request = require('request');
+
+    var urlencode = require('urlencode');
+    var EncodedName = urlencode(stationName);
+
+    var SearchStationNum = "https://m.seoul.go.kr/mobile/traffic/subway/GetSubwayRealtimeStationArrival.do";
+    request({
+    url: SearchStationNum,
+    data :{
+        		statnNm : EncodedName,
+        		timeStamp : "1504283576",
+        		ckSessionKey : "S20170902011011339_1504282211339_59.11.143.158"
+    },
+    method: 'POST'
+    }, function(err, response, body) {
+         var totalInfo2 = JSON.parse(body);
+          console.log(totalInfo2);
+            var array2 = {"STATN_NM": [], "predictTime": [], "routeDestName": []};  //post로 데이터 넘겨줘야 하는데 되는거지 안되는거지 모르겟다
+        
+            for( var i in totalInfo2["subwayStationMap"]){
+                array2["STATN_NM"][i] = totalInfo2["subwayStationMap"]["STATN_NM"];
+               console.log(array2["STATN_NM"][i]);
+            }
+
+           
     });
 }

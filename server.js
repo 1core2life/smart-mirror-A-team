@@ -42,6 +42,11 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
         busntrail.searchBus(res,stationName,busDes);  //location setting temp page
     });  
     
+   router.post('/searchTrainStationNum', function(req, res){
+        var stationName = req.body.stationName;
+        busntrail.searchTrain(res,stationName);  //location setting temp page
+    });    
+    
   router.get('/myPosition', function(req, res){
         var xPos ,yPos;
         var userDongName =req.param("userDongName");
