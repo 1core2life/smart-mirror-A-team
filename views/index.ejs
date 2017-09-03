@@ -40,23 +40,7 @@
       //      alert('아직 나는 "hello" 밖에 못알아먹습니다!');
 			//});
 	    annyang.addCallback('result', function(phrases) {
-	       if(phrases[0].indexOf("위치") != -1){
-          var inputText =phrases[0];
-          inputText = inputText.replace('위치','');
-          inputText = inputText.replace('위 치','');
-          document.getElementsByName("userDongName")[0].value = inputText.replace(/ /g, '');
-
-          $("#submitPos").trigger("click");
-        }
-         else if(phrases[0].indexOf("위 치") != -1 ){
-         var inputText =phrases[0];
-          inputText = inputText.replace('위치','');
-          inputText = inputText.replace('위 치','');
-          document.getElementsByName("userDongName")[0].value = inputText.replace(/ /g, '');
-
-          $("#submitPos").trigger("click");
-        } 
-	      
+	      console.log(phrases[0]);
         if( phrases[0].indexOf("반대") != -1){
           document.getElementsByName("busDes")[0].value = '1';
 
@@ -88,7 +72,6 @@
           $("#search").trigger("click");
         }    
       });
-      
 	    annyang.start();
 		}                                      
 				
@@ -136,15 +119,11 @@
 
     <br>
     <%= userStyle %>
+    <hr class="line-width">
     <input type="text" name = "stationName"  placeholder="정류장 이름을 입력" style="display: none;">
     <input type="text" name = "busDes" style="display: none;">
     <button type="submit" id = "search" style="display: none;">검색</button>
-
-    <form action="/myPosition" method="get" >
-        <input type="text" name="userDongName" style="display: none;"><br>
-        <input type="submit" id = "submitPos" value="전송" style="display: none;">
-    </form>
-
+        
     <div id="busWaitingReturn"></div>
     
     <hr class="line-width">
@@ -233,7 +212,7 @@
 	  $(function(){
 		  $("#planbutton").click(function(){ 
 			  $.ajax({ 
-				  type: 'post' ,
+				  type: 'get' ,
 				  url: '/plan',
 				  dataType : 'html' ,
 				  success: function(data) {
@@ -244,6 +223,7 @@
 	  })
   $(document).ready(function(){
       $("#search").click(function(){
+        console.log($('input[name="stationName"]').val() + "AA" + $('input[name="busDes"]').val() );
           $.ajax({ 
         	type :'post',
         	data :{
@@ -256,6 +236,7 @@
 	        error: whenError
      	    });
       });
+      
       $(".menu>a").click(function(){
           $(this).next("ul").toggleClass("hide");
       });
@@ -287,7 +268,7 @@
         alert("Error");
     }
     
-    function printClock() {
+  function printClock() {
       
       var clock = document.getElementById("clock");
       var currentDate = new Date();
@@ -304,9 +285,9 @@
       clock.innerHTML = currentHours+":"+currentMinute+":"+currentSeconds +" <span style='font-size:50px;'>"+ amPm+"</span>";
       
       setTimeout("printClock()",1000);
-    } 
- 
-    function addZeros(num, digit) {
+  }
+  
+  function addZeros(num, digit) {
   	  var zero = '';
   	  num = num.toString();
   	  if (num.length < digit) {
@@ -315,7 +296,7 @@
   	    }
   	  }
   	  return zero + num;
-     }
+  }
   
 </script>
  
