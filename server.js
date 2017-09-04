@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var busntrail = require('./busntrail');
 var music=require('./music');
 var news=require('./news');
+var imageSearch=require('./imageSearch');
 var ejs=require('ejs');
 var mysql=require('mysql');
 
@@ -27,9 +28,6 @@ router.set('views', path.join(__dirname, 'views'));
 router.set('view engine', 'ejs');
 
 
-
-
-
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
   console.log("sever started .. port"+ ": " + addr.port);
@@ -46,9 +44,16 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
         res.render('tempSet');  //location setting temp page
     });
     
+  router.post('/imageSearch',function(req,res){
+    var temperForCodi = req.body.temperForCodi;
+    imageSearch.imageSearch(res,temperForCodi);
+ 
+  });
+    
   router.post('/searchStationNum', function(req, res){
         var stationName = req.body.stationName;
-        busntrail.searchBus(res,stationName);  //location setting temp page
+        var busDes = req.body.busDes;
+        busntrail.searchBus(res,stationName,busDes);  //location setting temp page
     });  
     
    router.post('/searchTrainStationNum', function(req, res){
