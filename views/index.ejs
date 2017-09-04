@@ -35,6 +35,7 @@
        annyang.addCommands(commands);
        annyang.setLanguage('ko');
 	    annyang.addCallback('result', function(phrases) {
+<<<<<<< HEAD
 	   console.log(phrases[0]);
 	       if(phrases[0].indexOf("위치") != -1){
           var inputText =phrases[0];
@@ -53,6 +54,9 @@
           $("#submitPos").trigger("click");
         } 
 	      
+=======
+	      console.log(phrases[0]);
+>>>>>>> cf13918d7acfac54888c2a389bc73bf56205a00c
         if( phrases[0].indexOf("반대") != -1){
           document.getElementsByName("busDes")[0].value = '1';
 
@@ -84,7 +88,6 @@
           $("#search").trigger("click");
         }    
       });
-      
 	    annyang.start();
 		}                                      
 				
@@ -115,11 +118,28 @@
     <font size="30">
       <%= minTemp %> ºC
     </font>
+
+	  <!-- 음악 -->
+	 
+       <input type="text" name = "musicname">
+         <button type="submit" id = "musicbutton">음악!</button>
+    	<div id="musicvideo"></div>
+	  <!-- 뉴스 -->
+		<input type="button" id="newsbutton" value="뉴스!" />
+	  <br/> 
+	  <div id="newslist"></div>
+	  <!-- 일정 -->
+		<input type="button" id="planbutton" value="일정!" />
+	  <br/> 
+	  <div id="planlist"></div>
+
     <br>
     <%= userStyle %>
+    <hr class="line-width">
     <input type="text" name = "stationName"  placeholder="정류장 이름을 입력" style="display: none;">
     <input type="text" name = "busDes" style="display: none;">
     <button type="submit" id = "search" style="display: none;">검색</button>
+<<<<<<< HEAD
 
     <input type="text" name = "stationNameTrain" style="display: none;" placeholder="정류장 이름을 입력" >
     <button type="submit" style="display: none;" id = "searchTrain" >검색</button>
@@ -129,6 +149,9 @@
         <input type="submit" id = "submitPos" value="전송" style="display: none;">
     </form>
 
+=======
+        
+>>>>>>> cf13918d7acfac54888c2a389bc73bf56205a00c
     <div id="busWaitingReturn"></div>
     
     <form action="/voicecall" method="get">
@@ -181,15 +204,60 @@
       </ul>
      </div>
 
+<<<<<<< HEAD
     <input type="text" name = "exerciseName" style="display: none;" placeholder="운동 이름 입력">
     <input type="text" name = "exerciseNum" style="display: none;" placeholder="운동 시간/횟수 입력">
     <button type="submit"style="display: none;" id = "inputExercise">검색</button>
      
+=======
+    <input type="text" name = "exerciseName"  placeholder="운동 이름 입력">
+    <input type="text" name = "exerciseNum"  placeholder="운동 시간/횟수 입력">
+    <button type="submit" id = "inputExercise">검색</button>
+        <iframe id="player" type="text/html" width="640" height="360"frameborder="0"></iframe>
+	
+>>>>>>> cf13918d7acfac54888c2a389bc73bf56205a00c
   </body>
   
   <script>
+	  $(function(){
+		  $("#musicbutton").click(function(){ 
+			  $.ajax({ 
+				  type: 'post' ,
+				  url: '/music',
+				  dataType : 'html' ,
+				  success: function(data) {
+					  $("#musicvideo").html(data);
+				  } 
+			  });
+		  })
+	  })
+	  $(function(){
+		  $("#newsbutton").click(function(){ 
+			  $.ajax({ 
+				  type: 'post' ,
+				  url: '/news',
+				  dataType : 'html' ,
+				  success: function(data) {
+					  $("#newslist").html(data);
+				  } 
+			  });
+		  })
+	  })
+	  $(function(){
+		  $("#planbutton").click(function(){ 
+			  $.ajax({ 
+				  type: 'get' ,
+				  url: '/plan',
+				  dataType : 'html' ,
+				  success: function(data) {
+					  $("#planlist").html(data);
+				  } 
+			  });
+		  })
+	  })
   $(document).ready(function(){
       $("#search").click(function(){
+        console.log($('input[name="stationName"]').val() + "AA" + $('input[name="busDes"]').val() );
           $.ajax({ 
         	type :'post',
         	data :{
@@ -202,6 +270,7 @@
 	        error: whenError
      	    });
       });
+<<<<<<< HEAD
       $("#searchTrain").click(function(){
           $.ajax({ 
         	type :'post',
@@ -214,6 +283,9 @@
 	        error: whenError
      	    });
       });
+=======
+      
+>>>>>>> cf13918d7acfac54888c2a389bc73bf56205a00c
       $(".menu>a").click(function(){
           $(this).next("ul").toggleClass("hide");
       });
@@ -249,7 +321,7 @@
         alert("Error");
     }
     
-    function printClock() {
+  function printClock() {
       
       var clock = document.getElementById("clock");
       var currentDate = new Date();
@@ -266,9 +338,9 @@
       clock.innerHTML = currentHours+":"+currentMinute+":"+currentSeconds +" <span style='font-size:50px;'>"+ amPm+"</span>";
       
       setTimeout("printClock()",1000);
-    } 
- 
-    function addZeros(num, digit) {
+  }
+  
+  function addZeros(num, digit) {
   	  var zero = '';
   	  num = num.toString();
   	  if (num.length < digit) {
@@ -277,7 +349,7 @@
   	    }
   	  }
   	  return zero + num;
-     }
+  }
   
 </script>
  

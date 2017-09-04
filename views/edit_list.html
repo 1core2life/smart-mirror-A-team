@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>수정</title>
+</head>
+<body>
+  <h1>수정</h1>
+  <hr />
+  <form method="post">
+    <fieldset>
+      <legend>수정</legend>
+      <table>
+        <tr>
+          <td><label>일정</label></td>
+          <td><input type="text" name="date" value="<%= data.date %>" disabled /></td>
+        </tr>
+        <tr>
+          <td><label>내용</label></td>
+          <td><input type="text" name="schedule" value="<%= data.schedule %>" /></td>
+        </tr>
+       </table>
+      <input type="submit" />
+    </fieldset>
+  </form>
+</body>
+</html>
