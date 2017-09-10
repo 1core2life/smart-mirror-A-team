@@ -1,5 +1,20 @@
 exports.realTimeWeather = function(xPos,yPos,res) {
     
+    
+    if(xPos == 0 && yPos == 0){
+        res.render('index', {
+        temp: 0,
+        rainPro: 0,
+        rainForm: 0,
+        wetPercent: 0,
+        minTemp: 0,
+        weatherImg : "rainsun.png",
+        userStyle: "장소를 지정해주세요"
+      });
+      
+      return ;
+    }
+    
     var request = require('request');
 
     var today = new Date;
@@ -58,6 +73,7 @@ exports.realTimeWeather = function(xPos,yPos,res) {
     var skyForm;
     var temperature;
     var minTemp; 
+
 
     request({
     url: ForecastGribURL,

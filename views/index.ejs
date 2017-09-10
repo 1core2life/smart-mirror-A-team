@@ -31,7 +31,7 @@
 	         '명령어 닫기' : function(){
 	         $(".menu>a").trigger("click");
 	         },
-	         '코디 추천' : function(){
+	         '코디추천' : function(){
 	         $("#searchButton").trigger("click");
 	         },
 	         '코디 추천 닫기' : function(){
@@ -41,8 +41,24 @@
        annyang.addCommands(commands);
        annyang.setLanguage('ko');
 	   annyang.addCallback('result', function(phrases) {
-	       
+	       console.log(phrases[0]);
 	        phrases[0] = phrases[0].replace(/ /g, '');
+        
+             if( phrases[0].indexOf("운동") != -1){
+                if( phrases[0].indexOf("이름") != -1){
+                  var inputText =phrases[0];
+                  inputText = inputText.replace('운동','');
+                  inputText = inputText.replace('이름','');
+                  document.getElementsByName("exerciseName")[0].value = inputText;
+	            }
+	            else if( phrases[0].indexOf("시간") != -1){
+                  var inputText =phrases[0];
+                  inputText = inputText.replace('운동','');
+                  inputText = inputText.replace('시간','');
+                  document.getElementsByName("exerciseNum")[0].value = inputText;
+                  $("#inputExercise").trigger("click");
+	            }
+	        }
 
 	        if( phrases[0].indexOf("위치") != -1){
               var inputText =phrases[0];
@@ -119,8 +135,8 @@
     <input type="text" name = "busDes" style="display: none;">
     <button type="submit" id = "search" style="display: none;">검색</button>
 
-    <input type="text" name = "stationNameTrain" style="display: none;" placeholder="정류장 이름을 입력" >
-    <button type="submit" style="display: none;" id = "searchTrain" >검색</button>
+    <input type="text" name = "stationNameTrain"  placeholder="정류장 이름을 입력" >
+    <button type="submit"  id = "searchTrain" >검색</button>
 
     <form action="/myPosition" method="get" >
         <input type="text" name="userDongName" style="display: none;"><br>
@@ -170,14 +186,16 @@
         <li class="menu centered-bottom">
             <a><img src="" alt="명령어 목록"/></a>
             <ul class="hide">
-                <li>스타일 추천</li>
+                <li>코디 추천</li>
+                <li>버스 <이름> 반대</li>
+                <li>버스 <이름></li>
+                <li>위치 <이름></li>
+                <li>운동 <이름> .. 시간 <횟수></li>
+                <li>통화 모드</li>
                 <li>음악 틀기</li>
                 <li>오늘 뉴스 검색</li>
-                <li>지하철/버스 검색</li>
                 <li>메모 설정</li>
                 <li>알림 읽기</li>
-                <li>영상 전화</li>
-                <li>운동 계획 설정</li>
                 <li>메모 설정</li>
                 <li>일정 설정</li>
             </ul>
@@ -188,7 +206,8 @@
     <input type="text" name = "exerciseName"  placeholder="운동 이름 입력">
     <input type="text" name = "exerciseNum"  placeholder="운동 시간/횟수 입력">
     <button type="submit" id = "inputExercise">검색</button>
-        <iframe id="player" type="text/html" width="640" height="360"frameborder="0"></iframe>
+    
+    <iframe id="player" type="text/html" width="640" height="360"frameborder="0"></iframe>
 	
   </body>
   

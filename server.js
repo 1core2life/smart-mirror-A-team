@@ -17,8 +17,6 @@ var client =mysql.createConnection({
 	database: 'schedule'
 });
 var router = express();
-var content = fs.readFileSync('./views/tempSet.ejs', 'utf-8');
-var compiled = ejs.compile(content);
 
 var server = http.createServer(router);
 router.use(express.static(path.resolve(__dirname, 'client')));
@@ -41,7 +39,7 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
     
   router.get('/', function(req, res){
    
-        res.render('tempSet');  //location setting temp page
+        weather.realTimeWeather(0,0,res);
     });
     
   router.post('/imageSearch',function(req,res){
@@ -64,14 +62,20 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   router.get('/myPosition', function(req, res){
         var xPos ,yPos;
         var userDongName =req.param("userDongName");
+        
+        if(userDongName){
         var data = fs.readFileSync('positionFile', 'utf8') .split('\n');
 
-        for(var i in data){
-           if (data[i].indexOf(userDongName) > -1) {
-             xPos = data[i].toString().substring(23,30).replace(/\s/gi,'');//24th xpos   27 ypos..
-             yPos = data[i].toString().substr(30).replace(/\s/gi,'');
-             weather.realTimeWeather(xPos,yPos,res);
+            for(var i in data){
+               if (data[i].indexOf(userDongName) > -1) {
+                 xPos = data[i].toString().substring(23,30).replace(/\s/gi,'');//24th xpos   27 ypos..
+                 yPos = data[i].toString().substr(30).replace(/\s/gi,'');
+                 weather.realTimeWeather(xPos,yPos,res);
+                }
             }
+        }
+        else{
+            weather.realTimeWeather(0,0,res);
         }
     });
  router.post('/music', function(req, res){
