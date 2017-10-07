@@ -10,10 +10,11 @@
     <title>SMART MIRROR</title>
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-    <script src='http://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js'></script>
     <script src="/js/jquery.min.js" type="text/javascript"></script>
     <link href="/css/index.css" rel="stylesheet">
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
 
     function responsiveVoiceCalling(textData){
@@ -190,6 +191,11 @@
     <br>
     <%= userStyle %>
     <hr class="line-width">
+    
+    <font id="kakao">kakao</font> | <font id="kakaoContent">kakaoContent</font><br>
+    <font id="insta">insta</font> | <font id="instaContent">instaContent</font><br>
+    <font id="face">face</font> | <font id="faceContent">faceContent</font>
+    
     <input type="text" name = "stationName"  placeholder="정류장 이름을 입력" style="display: none;">
     <input type="text" name = "busDes" style="display: none;">
     <button type="submit" id = "search" style="display: none;">검색</button>
@@ -238,7 +244,7 @@
                 <li>버스 <이름> 반대</li>
                 <li>버스 <이름></li>
                 <li>위치 <이름></li>
-                <li>운동 <이름> .. 시간 <횟수></li>
+                <li>운동 이름 <이름> .. 시간 <횟수></li>
                 <li>운동 삭제</li>
                 <li>통화 모드</li>
                 <li>음악 틀기</li>
@@ -247,6 +253,8 @@
                 <li>알림 읽기</li>
                 <li>메모 설정</li>
                 <li>일정 설정</li>
+                <li>당신의 디바이스 IP는 <font id="myDeviceIp">myDeviceIp</font> 입니다.</li>
+
             </ul>
         </li>
       </ul>
@@ -261,6 +269,22 @@
   </body>
   
   <script>
+  var myIp = Math.floor(Math.random() * 100) + 1+'.'+Math.floor(Math.random() * 100) + 1;
+  document.getElementById('myDeviceIp').innerHTML=myIp;
+
+  (function poll(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/findNotis?myIp="+myIp, success: function(data){ 
+     document.getElementById('myDeviceIp').innerHTML=myIp;
+     document.getElementById('kakao').innerHTML=data[0];
+     document.getElementById('kakaoContent').innerHTML=data[1];
+     document.getElementById('insta').innerHTML=data[2];
+     document.getElementById('instaContent').innerHTML=data[3];
+     document.getElementById('face').innerHTML=data[4];
+     document.getElementById('faceContent').innerHTML=data[5];
+      
+      
+  }, dataType: "json", complete: poll, timeout: 30000 });
+  })();
+
 	  $(function(){
 		  $("#musicbutton").click(function(){ 
 			  $.ajax({ 
