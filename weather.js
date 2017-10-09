@@ -9,7 +9,7 @@ exports.realTimeWeather = function(xPos,yPos,res) {
         wetPercent: 0,
         minTemp: 0,
         weatherImg : "rainsun.png",
-        userStyle: "장소를 지정해주세요"
+        userStyle: "아직 위치가 지정되지 않았습니다. 장소를 지정 해주세요."
       });
       
       return ;

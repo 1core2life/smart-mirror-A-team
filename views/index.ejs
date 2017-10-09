@@ -157,25 +157,16 @@
     
     <img class="img-responsive margin-top"  src="/img/<%= weatherImg %>" alt="">
     현재 기온: 
-    <font size="30">
-      <%= temp %> ºC
-    </font>
+     <font size =10><%= temp %></font>/<font size =5><%= minTemp %></font> ºC 
+    <br>
     강수 확률: 
-    <font size="30">
-      <%= rainPro %> %
-    </font>
+     <font size =10><%= rainPro %></font> %
     <br>
     습도: 
-    <font size="30">
-      <%= wetPercent %> %
-    </font>
-    최저 기온: 
-    <font size="30">
-      <%= minTemp %> ºC
-    </font>
-    
+     <font size =10><%= wetPercent %></font> % 
+
 	  <!-- 음악 -->
-	 
+	 <br>
        <input type="text" name = "musicname">
          <button type="submit" id = "musicbutton">음악!</button>
     	<div id="musicvideo"></div>
@@ -191,11 +182,11 @@
     <br>
     <%= userStyle %>
     <hr class="line-width">
-    
+    <!--
     <font id="kakao">kakao</font> | <font id="kakaoContent">kakaoContent</font><br>
     <font id="insta">insta</font> | <font id="instaContent">instaContent</font><br>
     <font id="face">face</font> | <font id="faceContent">faceContent</font>
-    
+    -->
     <input type="text" name = "stationName"  placeholder="정류장 이름을 입력" style="display: none;">
     <input type="text" name = "busDes" style="display: none;">
     <button type="submit" id = "search" style="display: none;">검색</button>
@@ -272,18 +263,18 @@
   var myIp = Math.floor(Math.random() * 100) + 1+'.'+Math.floor(Math.random() * 100) + 1;
   document.getElementById('myDeviceIp').innerHTML=myIp;
 
-  (function poll(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/findNotis?myIp="+myIp, success: function(data){ 
-     document.getElementById('myDeviceIp').innerHTML=myIp;
-     document.getElementById('kakao').innerHTML=data[0];
-     document.getElementById('kakaoContent').innerHTML=data[1];
-     document.getElementById('insta').innerHTML=data[2];
-     document.getElementById('instaContent').innerHTML=data[3];
-     document.getElementById('face').innerHTML=data[4];
-     document.getElementById('faceContent').innerHTML=data[5];
+  //(function poll(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/findNotis?myIp="+myIp, success: function(data){ 
+    // document.getElementById('myDeviceIp').innerHTML=myIp;
+    // document.getElementById('kakao').innerHTML=data[0];
+    // document.getElementById('kakaoContent').innerHTML=data[1];
+    // document.getElementById('insta').innerHTML=data[2];
+    // document.getElementById('instaContent').innerHTML=data[3];
+    // document.getElementById('face').innerHTML=data[4];
+     //document.getElementById('faceContent').innerHTML=data[5];
       
       
-  }, dataType: "json", complete: poll, timeout: 30000 });
-  })();
+  //}, dataType: "json", complete: poll, timeout: 30000 });
+  //})();
 
 	  $(function(){
 		  $("#musicbutton").click(function(){ 
