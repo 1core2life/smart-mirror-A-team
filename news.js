@@ -39,16 +39,17 @@ var year = dt.getFullYear();
 	   writer.push(temp[0]);
 	   date.push(temp[1]);
    });
+   /*
    $('.ranking_section.ranfir2').find('li').each(function(index, ele) {
       var dt1 = $(this).eq(0);
  	   title.push(dt1.find('a').text());
        var dd = $(this).find('span').eq(0).text().trim();
        writer.push(dd);
 	   
-   }); 	
+   }); 	*/
 		
-		console.log(title);
-		console.log(writer);
+	//	console.log(title);
+		//console.log(writer);
 		res.render('new_result', {
     	news: title,
 		writer: writer

@@ -88,8 +88,17 @@
 	         '코디 추천 닫기' : function(){
 	          $("#codiImages").html("");
 	         },
+	         '음악 끄기' : function(){
+	          $("#musicvideo").html("");
+	         },
 	         '운동삭제' : function(){
 	          deleteExer();
+	         },
+	          '뉴스' : function(){
+	          $("#newsbutton").trigger("click");
+	         },
+	          '뉴스닫기' : function(){
+	           $("#newslist").html("");
 	         }
 	     };
        annyang.addCommands(commands);
@@ -122,6 +131,13 @@
               $("#submitPos").trigger("click");
 	        } 
 	        
+	     if(phrases[0].indexOf("음악") != -1){
+              var inputText =phrases[0];
+              inputText = inputText.replace('음악','');
+              document.getElementsByName("musicbutton")[0].value = inputText;
+    
+              $("#submusic").trigger("click");
+	        } 
           if(phrases[0].indexOf("버스") != -1){
             if( phrases[0].indexOf("반대") != -1)
               document.getElementsByName("busDes")[0].value = '1';
@@ -167,15 +183,16 @@
 
 	  <!-- 음악 -->
 	 <br>
-       <input type="text" name = "musicname">
-         <button type="submit" id = "musicbutton">음악!</button>
-    	<div id="musicvideo"></div>
-	  <!-- 뉴스 -->
-		<input type="button" id="newsbutton" value="뉴스!" />
+     
+        <input type="text" name="musicbutton" style="display: none;"><br>
+        <button type="submit" id = "submusic" value="전송" style="display: none;" ></button>
+    <div id="musicvideo" style="display: none;"></div>
+
+		<button type="submit" id="newsbutton" value="뉴스!" style="display: none;"></button>
 	  <br/> 
 	  <div id="newslist"></div>
 	  <!-- 일정 -->
-		<input type="button" id="planbutton" value="일정!" />
+		<input type="button" id="planbutton" value="일정!" style="display: none;" />
 	  <br/> 
 	  <div id="planlist"></div>
 
@@ -277,10 +294,11 @@
   //})();
 
 	  $(function(){
-		  $("#musicbutton").click(function(){ 
+		  $("#submusic").click(function(){ 
 			  $.ajax({ 
 				  type: 'post' ,
 				  url: '/music',
+				  data:{ musicname : $('input[name="musicbutton"]').val()},
 				  dataType : 'html' ,
 				  success: function(data) {
 					  $("#musicvideo").html(data);

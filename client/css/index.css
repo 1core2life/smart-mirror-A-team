@@ -12,9 +12,9 @@
   font-size: 40px;
 }
 .centered-bottom {
-  position:absolute; 
-  bottom:0px;
   text-align: center;
+  float:left;
+  margin-bottom: 20px;
 }
 .time {
  width:600px;

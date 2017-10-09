@@ -81,7 +81,7 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
  router.post('/music', function(req, res){
         var musicName = req.body.musicname;
 	 console.log(musicName);
-	    music.searchMusic(res,musicName);
+	    music.searchMusic(res,musicName);  
 	 	
     });  
  router.post('/news', function(req, res){
