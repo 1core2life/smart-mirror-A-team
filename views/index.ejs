@@ -99,6 +99,9 @@
 	         },
 	          '뉴스닫기' : function(){
 	           $("#newslist").html("");
+	         },
+	          '화장법' : function(){
+	           $("#captu").trigger("click");
 	         }
 	     };
        annyang.addCommands(commands);
@@ -184,17 +187,20 @@
 	  <!-- 음악 -->
 	 <br>
      
-        <input type="text" name="musicbutton" style="display: none;"><br>
-        <button type="submit" id = "submusic" value="전송" style="display: none;" ></button>
-    <div id="musicvideo" style="display: none;"></div>
+     <input type="text" name="musicbutton" style="display: none;"><br>
+     <button type="submit" id = "submusic" value="전송" style="display: none;" ></button>
+     <div id="musicvideo" style="display: none;"></div>
 
-		<button type="submit" id="newsbutton" value="뉴스!" style="display: none;"></button>
-	  <br/> 
-	  <div id="newslist"></div>
+     <button type="submit" id="newsbutton" value="뉴스!" style="display: none;"></button>
+	 <div id="newslist"></div>
 	  <!-- 일정 -->
-		<input type="button" id="planbutton" value="일정!" style="display: none;" />
-	  <br/> 
-	  <div id="planlist"></div>
+	 <input type="button" id="planbutton" value="일정!" style="display: none;" />
+	 <div id="planlist"></div>
+	 
+	 
+    <button type="submit"  id = "faceRecog" style="display: none;">분석</button>
+    <button type="submit"  id = "captureSave" style="display: none;">저장</button>
+    <button type="submit"  onclick="frameCapture()" id = "captu" style="display: none;" >캡쳐</button>
 
     <br>
     <%= userStyle %>
@@ -261,6 +267,7 @@
                 <li>알림 읽기</li>
                 <li>메모 설정</li>
                 <li>일정 설정</li>
+                <li>화장법</li>
                 <li>당신의 디바이스 IP는 <font id="myDeviceIp">myDeviceIp</font> 입니다.</li>
 
             </ul>
@@ -272,15 +279,71 @@
     <input type="text" name = "exerciseNum"  placeholder="운동 시간/횟수 입력" style="display: none;">
     <button type="submit" id = "inputExercise" style="display: none;">검색</button>
     
-    <iframe id="player" type="text/html" width="640" height="360"frameborder="0"></iframe>
+    <div id="myFace"></div>
+	
+    <font class="image-center" style=" margin-left: -50px; margin-top : 150px;" id="faceExplain"></font>
 	
   </body>
   
   <script>
+  function frameCapture(){
+      var constraints = {
+        facingMode: 'user',
+        width: {
+            ideal: 1280
+        },
+        height: {
+            ideal: 720
+        },
+        aspectRatio: {
+            ideal: 1.77
+        }
+        };
+        navigator.mediaDevices.getUserMedia({
+            video: constraints
+        }).then(function(camera) {
+            var video = document.createElement('video');
+            video.onloadedmetadata = function() {
+                var photo = takePhoto(video);
+                $("#myFace").html('<img class="image-center" id="faceImg" src="' + photo + '" style="max-width:10%;">');
+    
+                // now release the camera
+                camera.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+            };
+            
+            video.srcObject = camera;
+        }).catch(function(error) {
+            if(typeof error !== 'string') {
+                error = error.message || error.stack || error.name || error.toString();
+            }
+        
+            document.write('<h1>getUserMedia error: ' + error + '</h1>');
+        });
+        
+        function takePhoto(video) {
+            var canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth || video.clientWidth;
+            canvas.height = video.videoHeight || video.clientHeight;
+        
+            var context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+            return canvas.toDataURL('image/jpeg');
+        }
+        
+        setTimeout(function(){
+            $("#captureSave").trigger("click");
+            setTimeout(function(){
+                $("#faceRecog").trigger("click");
+            },1000);
+        },1000);
+  }
   var myIp = Math.floor(Math.random() * 100) + 1+'.'+Math.floor(Math.random() * 100) + 1;
   document.getElementById('myDeviceIp').innerHTML=myIp;
 
-  //(function poll(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/findNotis?myIp="+myIp, success: function(data){ 
+  //(function poll(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/findNotis?myIp="+myIp, success: function(data){     ---------서버와 통신
     // document.getElementById('myDeviceIp').innerHTML=myIp;
     // document.getElementById('kakao').innerHTML=data[0];
     // document.getElementById('kakaoContent').innerHTML=data[1];
@@ -331,6 +394,73 @@
 		  })
 	  })
   $(document).ready(function(){
+       $("#captureSave").click(function(){
+          $.ajax({ 
+        	type :'post',
+	        data : { photo : $('div#myFace img').attr('src') },
+	        url : '/capture',
+	        dataType : 'json',
+	        error: whenError
+     	    });
+      });
+      
+       $("#faceRecog").click(function(){
+          $.ajax({ 
+        	type :'post',  
+	        url : '/face',
+	        dataType : 'json',
+	        success: function(redata){
+	             var result;
+	             if(redata.info.faceCount == 1){
+    	            result = "추정 나이 |"+redata.faces[0].age.value;
+    	            if(redata.faces[0].gender.value == 'male')
+    	                result+="<br>성별 | 남";
+    	            else
+    	                result+="<br>성별 | 여";
+    	            var img = document.getElementById('faceImg');
+                    var canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height); 
+                    var pixelData = canvas.getContext('2d').getImageData(redata.faces[0].landmark.rightMouth.x, redata.faces[0].landmark.rightMouth.y, 2, 2).data;
+                    var revArray = new Array(3);
+                    revArray[0] =0;
+                    revArray[1] =0;
+                    revArray[2] =0;
+                    
+                    for (var i=0; i<pixelData.length; i++) {
+                      if (i % 4 == 0) {
+                          revArray[0] += pixelData[i];
+                      }
+                      else if (i % 4 == 1) {
+                          revArray[1] += pixelData[i];
+                      }
+                      else if (i % 4 == 2) {
+                          revArray[2] += pixelData[i];
+                      }
+                    }
+                    revArray[0]/=(pixelData.length/4);
+                    revArray[1]/=(pixelData.length/4);
+                    revArray[2]/=(pixelData.length/4);
+    
+                    console.log(Math.floor(revArray[0]));
+                    console.log(Math.floor(revArray[1]));
+                    console.log(Math.floor(revArray[2]));
+                    console.log(pixelData);
+
+	            }
+	            else{
+	                result ="얼굴 데이터를 추출할 수 없습니다<br>다시 촬영하세요";
+	                responsiveVoiceCalling("얼굴 데이터를 추출할 수 없습니다");
+
+	            }
+                
+	            $("#faceExplain").html(result);
+            },
+	        error: whenError
+     	    });
+      });
+      
       $("#searchButton").click(function(){
           $.ajax({ 
         	type :'post',

@@ -10,7 +10,8 @@ var news=require('./news');
 var imageSearch=require('./imageSearch');
 var ejs=require('ejs');
 var mysql=require('mysql');
-
+var client_id = 'RLZaE7QUw3TxOxJNWNIY';
+var client_secret = 'bbmotnwyW_';
 var client =mysql.createConnection({
 	user:'root',
 	password: '123',
@@ -21,7 +22,7 @@ var router = express();
 var server = http.createServer(router);
 router.use(express.static(path.resolve(__dirname, 'client')));
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.urlencoded({limit: '5mb', extended: true}));
 router.set('views', path.join(__dirname, 'views'));
 router.set('view engine', 'ejs');
 
@@ -41,6 +42,30 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
    
         weather.realTimeWeather(0,0,res);
     });
+    
+  router.post('/capture', function(req, res) {
+        var data = req.body.photo.replace(/^data:image\/\w+;base64,/, "");
+   var buf = new Buffer(data, 'base64');
+   fs.writeFile('./client/img/myCaptureImg.jpg', buf);
+   
+  })
+    
+  router.post('/face', function (req, res) {
+ 
+   var request = require('request');
+   var api_url = 'https://openapi.naver.com/v1/vision/face'; // 얼굴 감지
+    
+   var _formData = {
+     image:'image',
+     image: fs.createReadStream(__dirname+'/client/img/myCaptureImg.jpg') // FILE 이름
+   };
+    var _req = request.post({url:api_url, formData:_formData,
+      headers: {'X-Naver-Client-Id':client_id, 'X-Naver-Client-Secret': client_secret}}).on('response', function(response) {
+       console.log(response.statusCode) // 200
+       console.log(response.headers['content-type'])
+    });
+    _req.pipe(res); // 브라우저로 출력
+  });    
     
   router.post('/imageSearch',function(req,res){
     var temperForCodi = req.body.temperForCodi;

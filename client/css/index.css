@@ -46,6 +46,7 @@
 .margin-top {
   margin-top: 100px;
 }
+
 .line-width {
   width: 550px;
   margin-left :0px;
@@ -55,4 +56,11 @@
 }
 .menu .hide{
  display:none;
+}
+.image-center{
+  position:absolute; 
+  top:50%; left:50%; 
+  overflow:hidden; 
+  margin-top:-100px; 
+  margin-left:-100px;
 }
