@@ -88,7 +88,7 @@
 	         '코디 추천 닫기' : function(){
 	          $("#codiImages").html("");
 	         },
-	         '음악 끄기' : function(){
+	         '음악끄기' : function(){
 	          $("#musicvideo").html("");
 	         },
 	         '운동삭제' : function(){
@@ -100,8 +100,19 @@
 	          '뉴스닫기' : function(){
 	           $("#newslist").html("");
 	         },
+	          '버스닫기' : function(){
+	           $("#busWaitingReturn").html("");
+	         },
+	          '지하철닫기' : function(){
+	           $("#trainWaitingReturn").html("");
+	         },
+	          '화장닫기' : function(){
+	           $("#musicvideo").html("");
+	           $("#faceExplain").html("");
+	         },
 	          '화장법' : function(){
 	           $("#captu").trigger("click");
+	           
 	         }
 	     };
        annyang.addCommands(commands);
@@ -189,7 +200,7 @@
      
      <input type="text" name="musicbutton" style="display: none;"><br>
      <button type="submit" id = "submusic" value="전송" style="display: none;" ></button>
-     <div id="musicvideo" style="display: none;"></div>
+     <div id="musicvideo" ></div>
 
      <button type="submit" id="newsbutton" value="뉴스!" style="display: none;"></button>
 	 <div id="newslist"></div>
@@ -200,7 +211,7 @@
 	 
     <button type="submit"  id = "faceRecog" style="display: none;">분석</button>
     <button type="submit"  id = "captureSave" style="display: none;">저장</button>
-    <button type="submit"  onclick="frameCapture()" id = "captu" style="display: none;" >캡쳐</button>
+    <button type="submit"  onclick="frameCapture()" id = "captu" >캡쳐</button>
 
     <br>
     <%= userStyle %>
@@ -278,9 +289,10 @@
     <input type="text" name = "exerciseName"  placeholder="운동 이름 입력" style="display: none;">
     <input type="text" name = "exerciseNum"  placeholder="운동 시간/횟수 입력" style="display: none;">
     <button type="submit" id = "inputExercise" style="display: none;">검색</button>
-    
+
+    <input type="text" name = "faceHo" >
     <div id="myFace"></div>
-	
+
     <font class="image-center" style=" margin-left: -50px; margin-top : 150px;" id="faceExplain"></font>
 	
   </body>
@@ -305,7 +317,7 @@
             var video = document.createElement('video');
             video.onloadedmetadata = function() {
                 var photo = takePhoto(video);
-                $("#myFace").html('<img class="image-center" id="faceImg" src="' + photo + '" style="max-width:10%;">');
+                $("#myFace").html('<img class="image-center" id="faceImg" src="' + photo + '" >');
     
                 // now release the camera
                 camera.getTracks().forEach(function(track) {
@@ -324,8 +336,8 @@
         
         function takePhoto(video) {
             var canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth || video.clientWidth;
-            canvas.height = video.videoHeight || video.clientHeight;
+            canvas.width = video.videoWidth*0.3 || video.clientWidth;
+            canvas.height = video.videoHeight*0.3 || video.clientHeight;
         
             var context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -411,7 +423,7 @@
 	        dataType : 'json',
 	        success: function(redata){
 	             var result;
-	             if(redata.info.faceCount == 1){
+	             if(redata.info.faceCount == 1 && redata.faces[0].landmark.rightMouth){
     	            result = "추정 나이 |"+redata.faces[0].age.value;
     	            if(redata.faces[0].gender.value == 'male')
     	                result+="<br>성별 | 남";
@@ -427,7 +439,6 @@
                     revArray[0] =0;
                     revArray[1] =0;
                     revArray[2] =0;
-                    
                     for (var i=0; i<pixelData.length; i++) {
                       if (i % 4 == 0) {
                           revArray[0] += pixelData[i];
@@ -439,14 +450,32 @@
                           revArray[2] += pixelData[i];
                       }
                     }
-                    revArray[0]/=(pixelData.length/4);
-                    revArray[1]/=(pixelData.length/4);
-                    revArray[2]/=(pixelData.length/4);
-    
-                    console.log(Math.floor(revArray[0]));
-                    console.log(Math.floor(revArray[1]));
-                    console.log(Math.floor(revArray[2]));
-                    console.log(pixelData);
+                    revArray[0]=Math.floor(revArray[0]/(pixelData.length/4)); //R
+                    revArray[1]=Math.floor(revArray[1]/(pixelData.length/4)); //G
+                    revArray[2]=Math.floor(revArray[2]/(pixelData.length/4)); //B
+
+                    var lightValue =  (0.2126*(revArray[0]) + 0.7152*(revArray[1]) + 0.0722*(revArray[2]));
+                    if(lightValue < 100){
+                       document.getElementsByName("faceHo")[0].value = "13"; 
+                    }
+                    else if(lightValue < 130){
+                        document.getElementsByName("faceHo")[0].value = "21"; 
+                    }
+                    else
+                        document.getElementsByName("faceHo")[0].value = "23";   
+                    
+                    
+                    $.ajax({ 
+    				  type: 'post' ,
+    				  url: '/faceYoutube',
+    				  data:{ musicname : $('input[name="faceHo"]').val()},
+    				  dataType : 'html' ,
+    				  success: function(data) {
+    					  $("#musicvideo").html(data);
+    					  $("#myFace").html("");
+    				  } 
+		             });
+
 
 	            }
 	            else{

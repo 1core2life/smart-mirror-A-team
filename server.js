@@ -43,10 +43,17 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
         weather.realTimeWeather(0,0,res);
     });
     
+  router.post('/faceYoutube', function(req, res){
+        var musicName = req.body.musicname;
+	    music.searchMusic(res,musicName+"호 화장법");  
+	 		 console.log(musicName+"호 화장법");
+
+  });   
+    
   router.post('/capture', function(req, res) {
         var data = req.body.photo.replace(/^data:image\/\w+;base64,/, "");
    var buf = new Buffer(data, 'base64');
-   fs.writeFile('./client/img/myCaptureImg.jpg', buf);
+   fs.writeFile('./client/img/myCaptureImg.png', buf);
    
   })
     
@@ -57,7 +64,7 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
     
    var _formData = {
      image:'image',
-     image: fs.createReadStream(__dirname+'/client/img/myCaptureImg.jpg') // FILE 이름
+     image: fs.createReadStream(__dirname+'/client/img/myCaptureImg.png') // FILE 이름
    };
     var _req = request.post({url:api_url, formData:_formData,
       headers: {'X-Naver-Client-Id':client_id, 'X-Naver-Client-Secret': client_secret}}).on('response', function(response) {
