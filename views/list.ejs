@@ -8,13 +8,13 @@
 				<th>날짜</th>
 				<th>내용</th>
 			</tr>
-			<% data.forEach(function (item,index){ %>
+			<% if(mydata) mydata.forEach(function (item,index){ %>
 			<tr>
-				<!-- <td><a href="/plan/delete/<%= item.date %>">삭제</a></td>-->
-				<!-- <td><a href="/plan/edit/<%= item.date %>">수정</a></td>	-->
+				 <td><a href="/plan/delete/<%= item.date %>">삭제</a></td>
+				 <td><a href="/plan/edit/<%= item.date %>">수정</a></td>
 				<td><%= item.date %></td>
 				<td><%= item.schedule %></td>	
 			</tr>
-				<% }) %>
+				<% })   %>
 		</table>
 				

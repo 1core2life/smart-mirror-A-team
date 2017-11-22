@@ -56,6 +56,9 @@
      function deleteExer(){
       document.getElementById('exerciseList').innerHTML="";
     }
+     function deleteDate(){
+      document.getElementById('scheduleList').innerHTML="";
+    }
     
 
     if(annyang){
@@ -94,6 +97,9 @@
 	         '운동삭제' : function(){
 	          deleteExer();
 	         },
+	          '일정삭제' : function(){
+	          deleteDate();
+	         },
 	          '뉴스' : function(){
 	          $("#newsbutton").trigger("click");
 	         },
@@ -106,18 +112,28 @@
 	          '지하철닫기' : function(){
 	           $("#trainWaitingReturn").html("");
 	         },
-	          '화장닫기' : function(){
+	          '화장법닫기' : function(){
 	           $("#musicvideo").html("");
 	           $("#faceExplain").html("");
 	         },
 	          '화장법' : function(){
 	           $("#captu").trigger("click");
+	         },
+	          '알림' : function(){
+	           document.getElementById('kakao').innerHTML="";
+               document.getElementById('messaging').innerHTML="";
+               document.getElementById('face').innerHTML="";
+               
+               $('#faceImg').css("display", "none"); 
+               $('#messagingImg').css("display", "none"); 
+               $('#kakaoImg').css("display", "none"); 
+	           $("#checkNoti").trigger("click");
 	           
 	         }
 	     };
-       annyang.addCommands(commands);
-       annyang.setLanguage('ko');
-	     annyang.addCallback('result', function(phrases) {
+           annyang.addCommands(commands);
+           annyang.setLanguage('ko');
+	       annyang.addCallback('result', function(phrases) {
 	       console.log(phrases[0]);
 	       phrases[0] = phrases[0].replace(/ /g, '');
         
@@ -136,6 +152,32 @@
                 $("#inputExercise").trigger("click");
             }
          }
+         
+         if( phrases[0].indexOf("메모") != -1){
+                var inputText =phrases[0];
+                inputText = inputText.replace('메모','');
+                document.getElementsByName("exerciseName")[0].value = inputText;
+                document.getElementsByName("exerciseNum")[0].value = "";
+                $("#inputExercise").trigger("click");
+            
+         }
+         
+          if( phrases[0].indexOf("일정") != -1){
+            if( phrases[0].indexOf("내용") != -1){
+              var inputText =phrases[0];
+              inputText = inputText.replace('일정','');
+              inputText = inputText.replace('내용','');
+              document.getElementsByName("scheduleContent")[0].value = inputText;
+            }
+            else if( phrases[0].indexOf("시간") != -1){
+                var inputText =phrases[0];
+                inputText = inputText.replace('일정','');
+                inputText = inputText.replace('시간','');
+                document.getElementsByName("scheduleDay")[0].value = inputText;
+                $("#inputSchedule").trigger("click");
+            }
+         }
+         
          
          if(phrases[0].indexOf("위치") != -1){
               var inputText =phrases[0];
@@ -182,6 +224,7 @@
   </head>
 
   <body class="background text-white" onload="printClock()">
+      
     <div class="centered"> SMART MIRROR </div>
     <div class="time" id="clock"></div>
     
@@ -211,18 +254,18 @@
 	 
     <button type="submit"  id = "faceRecog" style="display: none;">분석</button>
     <button type="submit"  id = "captureSave" style="display: none;">저장</button>
-    <button type="submit"  onclick="frameCapture()" id = "captu" >캡쳐</button>
+    <button type="submit"  onclick="frameCapture()" id = "captu"  style="display: none;">캡쳐</button>
 
     <br>
     <%= userStyle %>
     <hr class="line-width">
-    <!--
-    <font id="kakao">kakao</font> | <font id="kakaoContent">kakaoContent</font><br>
-    <font id="insta">insta</font> | <font id="instaContent">instaContent</font><br>
-    <font id="face">face</font> | <font id="faceContent">faceContent</font>
-    -->
+    
+    <img class="img-responsive margin-top" style="margin:0;padding:0;display: none;" src="/img/messaging.png" alt=""  id="messagingImg"> <font id="messaging"></font><br>
+    <img class="img-responsive margin-top" style="margin:0;padding:0;display: none;" src="/img/kakaotalk.png" alt="" id="kakaoImg"> <font id="kakao"></font><br>
+    <img class="img-responsive margin-top" style="margin:0;padding:0;display: none;" src="/img/facebook.jpg" alt="" id="faceImg"> <font id="face"></font>
+    
     <input type="text" name = "stationName"  placeholder="정류장 이름을 입력" style="display: none;">
-    <input type="text" name = "busDes" style="display: none;">
+    <input type="text" name = "busDes" style="display: none;" >
     <button type="submit" id = "search" style="display: none;">검색</button>
 
     <input type="text" name = "stationNameTrain"  placeholder="정류장 이름을 입력"  style="display: none;">
@@ -239,6 +282,8 @@
     
     
     <button  type="submit" id="searchButton"  style="display: none;">검색</button>
+    
+    <button  type="submit" id="checkNoti"  style="display: none;">검색</button>
   
     <div id="codiImages"></div>
     
@@ -247,12 +292,22 @@
       <button type="submit" id = "voiceCall" style="display: none;">통화 모드</button>
     </form>
     
-    <div class="panel panel-default panel-height">
+    
+    <div class="panel panel-info panel-height">
       <div class="panel-heading">
-        <i class="fa fa-bell fa-fw"></i> 운동 일정
+        <i class="fa fa-bell fa-fw"></i> 알림판
       </div>
       <div class="panel-body">
         <div class="list-group" id="exerciseList">
+          <!-- 운동 목록 -->
+        </div>
+      </div>
+      
+      <div class="panel-heading">
+        <i class="fa fa-bell fa-fw"></i> 일정
+      </div>
+      <div class="panel-body">
+        <div class="list-group" id="scheduleList">
           <!-- 운동 목록 -->
         </div>
       </div>
@@ -263,34 +318,42 @@
         <li class="menu centered-bottom">
             <a><img src="" alt="명령어 목록"/></a>
             <ul class="hide">
+                <li>안녕</li>
                 <li>날씨</li>
                 <li>시간</li>
-                <li>코디 추천</li>
-                <li>버스 <이름> 반대</li>
-                <li>버스 <이름></li>
+                <li>명령어(닫기)</li>
+                <li>통화 모드</li>     
+                <li>코디 추천(닫기)</li>
+                <li>운동 삭제</li>
+                <li>일정 삭제</li>
+                <li>뉴스 (닫기)</li>
+                <li>음악 <이름>(끄기)</li>
+                <li>버스 <이름> (반대)(닫기)</li>
+                <li>지하철 <이름> (닫기)</li>
+                <li>화장법 <닫기></li>
                 <li>위치 <이름></li>
                 <li>운동 이름 <이름> .. 시간 <횟수></li>
-                <li>운동 삭제</li>
-                <li>통화 모드</li>
-                <li>음악 틀기</li>
-                <li>오늘 뉴스 검색</li>
-                <li>메모 설정</li>
-                <li>알림 읽기</li>
-                <li>메모 설정</li>
-                <li>일정 설정</li>
-                <li>화장법</li>
-                <li>당신의 디바이스 IP는 <font id="myDeviceIp">myDeviceIp</font> 입니다.</li>
+                <li>메모 <내용></li>
+                <li>일정 내용 <내용> .. 시간 <날짜></li>
+                <li>알림</li>
+                <li>IP : <font name="myDeviceIp">myDeviceIp</font></li>
 
             </ul>
         </li>
       </ul>
      </div>
 
-    <input type="text" name = "exerciseName"  placeholder="운동 이름 입력" style="display: none;">
-    <input type="text" name = "exerciseNum"  placeholder="운동 시간/횟수 입력" style="display: none;">
-    <button type="submit" id = "inputExercise" style="display: none;">검색</button>
+    <input type="text" name = "exerciseName"  placeholder="운동 이름 입력" style="display: none;" >
+    <input type="text" name = "exerciseNum"  placeholder="운동 시간/횟수 입력" style="display: none;" >
+    <button type="submit" id = "inputExercise"  style="display: none;">검색</button>
+    
+    
+    <input type="text" name = "scheduleContent"  placeholder="운동 이름 입력"  style="display: none;">
+    <input type="text" name = "scheduleDay"  placeholder="운동 시간/횟수 입력" style="display: none;" >
+    <button type="submit" id = "inputSchedule"  style="display: none;">검색</button>
 
-    <input type="text" name = "faceHo" >
+
+    <input type="text" name = "faceHo" style="display: none;" >
     <div id="myFace"></div>
 
     <font class="image-center" style=" margin-left: -50px; margin-top : 150px;" id="faceExplain"></font>
@@ -352,21 +415,117 @@
             },1000);
         },1000);
   }
+  
   var myIp = Math.floor(Math.random() * 100) + 1+'.'+Math.floor(Math.random() * 100) + 1;
-  document.getElementById('myDeviceIp').innerHTML=myIp;
+  document.getElementsByName('myDeviceIp')[0].innerHTML=myIp;
+  document.getElementsByName('myDeviceIp')[0].value=myIp;
 
-  //(function poll(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/findNotis?myIp="+myIp, success: function(data){     ---------서버와 통신
-    // document.getElementById('myDeviceIp').innerHTML=myIp;
-    // document.getElementById('kakao').innerHTML=data[0];
-    // document.getElementById('kakaoContent').innerHTML=data[1];
-    // document.getElementById('insta').innerHTML=data[2];
-    // document.getElementById('instaContent').innerHTML=data[3];
-    // document.getElementById('face').innerHTML=data[4];
-     //document.getElementById('faceContent').innerHTML=data[5];
+
+    (function poll(){ setTimeout(function(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/syncData", success: function(data){ //Update your dashboard gauge 
+
+         if(data[0] || data[1])//bus
+        {
+             var busDes = data[0];
+             var stationName = data[1];
+             document.getElementsByName("busDes")[0].value = busDes; 
+             document.getElementsByName("stationName")[0].value = stationName;
+             
+               $.ajax({ 
+                	type :'post',
+                	data :{
+                		stationName : $('input[name="stationName"]').val(),
+                		busDes :  $('input[name="busDes"]').val()
+                	},  
+        	        url : '/searchStationNum',
+        	        dataType : 'json',
+        	        success: whenSuccess,
+        	        error: whenError
+         	    });
+             
+          
+    
+        }
+         if(data[2])//train
+         {
+              var stationName = data[2];
+             document.getElementsByName("stationName")[0].value = stationName;
+             
+              $.ajax({ 
+            	type :'post',
+            	data :{
+            		stationName : $('input[name="stationNameTrain"]').val()
+            	},  
+    	        url : '/searchTrainStationNum',
+    	        dataType : 'json',
+    	        success: whenSuccessTrain,
+    	        error: whenError
+         	   });
+             
+             
+          
+         }
+         if(data[3] || data[4])//memo
+         {
+             var exerciseNum = data[3];
+             var exerciseName = data[4];
+              document.getElementsByName("exerciseNum")[0].value = exerciseNum; 
+              document.getElementsByName("exerciseName")[0].value = exerciseName;
+             
+              document.getElementById('exerciseList').innerHTML+=" <a href='#' class='list-group-item'><i class='fa fa-envelope fa-fw'></i>"
+                  +$('input[name="exerciseName"]').val()+"<span class='pull-right text-muted small'><em>"
+                  +$('input[name="exerciseNum"]').val()+"</em></span></a>";
+            
+
+         }
+          if(data[5] || data[6])//memo
+         {
+             var scheduleContent = data[5];
+             var scheduleDay = data[6];
+              document.getElementsByName("scheduleContent")[0].value = scheduleContent; 
+              document.getElementsByName("scheduleDay")[0].value = scheduleDay;
+             
+              document.getElementById('scheduleList').innerHTML+=" <a href='#' class='list-group-item'><i class='fa fa-envelope fa-fw'></i>"
+                  +$('input[name="scheduleContent"]').val()+"<span class='pull-right text-muted small'><em>"
+                  +$('input[name="scheduleDay"]').val()+"</em></span></a>";
+            
+
+         }
+
+    poll(); },
+    data:{ deviceIP : document.getElementsByName('myDeviceIp')[0].value}, 
+    dataType: "json", 
+        
+    }); }, 500); })();
+
+
+
+    
+    setInterval(function(){ $.ajax({ url: "http://www.smartmirror-cloudserver-corelife.c9users.io/findNotis", success: function(data){ 
+
+         if(data[0])
+        {
+             document.getElementById('messaging').innerHTML="문자 알림";
+             $('#messagingImg').css("display", ""); 
+    
+        }
+         if(data[1])
+        {
+             document.getElementById('kakao').innerHTML="카톡 알림";
+                $('#kakaoImg').css("display", ""); 
+         }
+         if(data[2])
+        {
+             document.getElementById('face').innerHTML="페이스북 알림";
+                $('#faceImg').css("display", ""); 
+         }
       
-      
-  //}, dataType: "json", complete: poll, timeout: 30000 });
-  //})();
+    }, dataType: "json"}); }, 3000);
+    
+    
+  
+
+  
+  
 
 	  $(function(){
 		  $("#submusic").click(function(){ 
@@ -406,6 +565,13 @@
 		  })
 	  })
   $(document).ready(function(){
+      $("#checkNoti").click(function(){
+          $.ajax({ 
+        	type :'get',
+	        url : 'http://www.smartmirror-cloudserver-corelife.c9users.io/checkNoti',
+     	    });
+      });
+      
        $("#captureSave").click(function(){
           $.ajax({ 
         	type :'post',
@@ -534,6 +700,71 @@
 	        error: whenError
      	    });
       });
+
+      //서버로 전송
+      $("#search").click(function(){
+          $.ajax({ 
+        	type :'get',
+        	data :{
+        	    dataType : "bus",
+        	     deviceIP : document.getElementsByName('myDeviceIp')[0].value,
+        		stationName : $('input[name="stationName"]').val(),
+        		busDes :  $('input[name="busDes"]').val()
+        	},  
+	        url : 'http://www.smartmirror-cloudserver-corelife.c9users.io/data',
+	        dataType : 'json'
+     	    });
+      });
+      //---------------
+      
+      //서버로 전송
+      $("#searchTrain").click(function(){
+          $.ajax({ 
+        	type :'get',
+        	data :{
+        	    dataType : "train",
+        	     deviceIP : document.getElementsByName('myDeviceIp')[0].value,
+        		stationName : $('input[name="stationNameTrain"]').val()
+        	},  
+	        url : 'http://www.smartmirror-cloudserver-corelife.c9users.io/data',
+	        dataType : 'json'
+     	    });
+      });
+     //---------------
+     
+     
+      //서버로 전송
+      $("#inputExercise").click(function(){
+          $.ajax({ 
+        	type :'get',
+        	data :{
+        	    dataType : "memo",
+        	    deviceIP : document.getElementsByName('myDeviceIp')[0].value,
+        		exerciseNum : $('input[name="exerciseNum"]').val(),
+        		exerciseName : $('input[name="exerciseName"]').val()
+        	},  
+	        url : 'http://www.smartmirror-cloudserver-corelife.c9users.io/data',
+	        dataType : 'json'
+     	    });
+      });
+     //---------------
+     
+      //서버로 전송
+      $("#inputSchedule").click(function(){
+          $.ajax({ 
+        	type :'get',
+        	data :{
+        	    dataType : "schedule",
+        	    deviceIP : document.getElementsByName('myDeviceIp')[0].value,
+        		scheduleContent : $('input[name="scheduleContent"]').val(),
+        		scheduleDay : $('input[name="scheduleDay"]').val()
+        	},  
+	        url : 'http://www.smartmirror-cloudserver-corelife.c9users.io/data',
+	        dataType : 'json'
+     	    });
+      });
+     //---------------
+     
       
       $(".menu>a").click(function(){
           $(this).next("ul").toggleClass("hide");
@@ -543,6 +774,14 @@
           document.getElementById('exerciseList').innerHTML+=" <a href='#' class='list-group-item'><i class='fa fa-envelope fa-fw'></i>"
           +$('input[name="exerciseName"]').val()+"<span class='pull-right text-muted small'><em>"
           +$('input[name="exerciseNum"]').val()+"</em></span></a>";
+
+      });
+      
+       $("#inputSchedule").click(function(){
+          document.getElementById('scheduleList').innerHTML+=" <a href='#' class='list-group-item'><i class='fa fa-envelope fa-fw'></i>"
+          +$('input[name="scheduleContent"]').val()+"<span class='pull-right text-muted small'><em>"
+          +$('input[name="scheduleDay"]').val()+"</em></span></a>";
+
 
       });
       

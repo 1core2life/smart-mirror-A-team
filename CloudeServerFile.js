@@ -28,69 +28,135 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   console.log("Chat server listening at", addr.address + ":" + addr.port);
 });
 
-var notifications = new Array(100);
+var notifications = new Array(3);
 var id = new Array(100);
 var userNum= 0;
-var resultvalue= new Array();
+var resultvalue= new Array(100);
+var deviceNum = 0;
 
-    router.get('/findNotis', function(req, res){
-       var deviceIp =req.param("myIp");
-       var sendingData = new Array(6);
-       for( var i in notifications){
-        if(notifications[i][6] == deviceIp){
-            console.log("deviceIp found!" );
-            sendingData[0]= notifications[i][0];
-            sendingData[1]= notifications[i][1];
-            sendingData[2]= notifications[i][2];
-            sendingData[3]= notifications[i][3];
-            sendingData[4]= notifications[i][4];
-            sendingData[5]= notifications[i][5];
+    router.get('/data', function(req, res){
+        var dataType =req.param("dataType");
+        var deviceIP =req.param("deviceIP");
+        resultvalue[deviceNum] = new Array(8);
+        resultvalue[deviceNum][0] = deviceIP;
+
+        console.log("data"+deviceIP);
+        if(dataType == "bus") //운동에 대한 데이터 전달
+        {
+            
+            resultvalue[deviceNum][1] =req.param("busDes");
+            resultvalue[deviceNum][2] =req.param("stationName");
+            
+
+            
+        }
+        else  if(dataType == "train") //운동에 대한 데이터 전달
+        {
+            
+            resultvalue[deviceNum][3] =req.param("stationName");
+
+            
+        }
+        else  if(dataType == "memo") //운동에 대한 데이터 전달
+        {
+            
+            resultvalue[deviceNum][4] =req.param("exerciseNum");
+            resultvalue[deviceNum][5] =req.param("exerciseName");
+ 
+        }
+        else  if(dataType == "schedule") //운동에 대한 데이터 전달
+        {
+            
+            resultvalue[deviceNum][6] =req.param("scheduleContent");
+            resultvalue[deviceNum][7] =req.param("scheduleDay");
+ 
+        }
+        
+        deviceNum++;
+        if(deviceNum == 99)
+            deviceNum = 0;
+    });
+    
+     router.get('/syncData', function(req, res){
+        var deviceIP =req.param("deviceIP");
+        var sendingData = new Array(7);
+        
+        for(var i=0; i<deviceNum ; i++){
+            if(resultvalue[i][0] != deviceIP && resultvalue[i][0] != null){
+                 console.log("syncData"+i+deviceIP);
+                sendingData[0]= resultvalue[i][1];
+                sendingData[1]= resultvalue[i][2];
+                sendingData[2]= resultvalue[i][3];
+                sendingData[3]= resultvalue[i][4];
+                sendingData[4]= resultvalue[i][5];     
+                 sendingData[5]= resultvalue[i][6];
+                sendingData[6]= resultvalue[i][7];     
+                
+                resultvalue[i][0]= null;
+                resultvalue[i][1]= null;
+                resultvalue[i][2]= null;
+                resultvalue[i][3]= null;
+                resultvalue[i][4]= null;
+                resultvalue[i][5]= null;
+                 resultvalue[i][6]= null;
+                resultvalue[i][7]= null;
+                break;
             }
         }
+       
+        var renderingJson = JSON.stringify(sendingData);
+        res.writeHead(200 , {'Content-Type': 'text/html'});
+	    res.end(renderingJson);
+
+
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    router.get('/findNotis', function(req, res){
+       var sendingData = new Array(3);
+        sendingData[0]= notifications[0];
+        sendingData[1]= notifications[1];
+        sendingData[2]= notifications[2];
         var renderingJson = JSON.stringify(sendingData);
         res.writeHead(200 , {'Content-Type': 'text/html'});
 	    res.end(renderingJson);
     });
     
     router.get('/notification', function(req, res){
-        var kakaoContent =req.param("kakaoContent");
-        var kakao =req.param("kakao")
-        var instaContent =req.param("instaContent");
-        var insta =req.param("insta");
-        var faceContent =req.param("faceContent");
-        var face =req.param("face");
-        var deviceIp =req.param("myIp");
-
-        for(var i = 0; i<notifications.length ; i++)
-        {
-
-            if(notifications[i] ==  deviceIp)
-            {
-                notifications[i] = new Array(7);
-                notifications[i][0] =kakaoContent;
-                notifications[i][1] =kakao;
-                notifications[i][2] =instaContent;
-                notifications[i][3] =insta;
-                notifications[i][4] =faceContent;
-                notifications[i][5] =face;
-                notifications[i][6] =deviceIp;
-                break;
-            }
-            if(!notifications[i])
-            {
-                notifications[i] = new Array(7);
-                notifications[i][0] =kakaoContent;
-                notifications[i][1] =kakao;
-                notifications[i][2] =instaContent;
-                notifications[i][3] =insta;
-                notifications[i][4] =faceContent;
-                notifications[i][5] =face; 
-                notifications[i][6] =deviceIp;
-                break;
-            }
-        }
         
+        var id =req.param("id");
+        if(id.indexOf("messaging") != -1)
+            notifications[0] = id;
+        else if(id.indexOf("kakaotalk") != -1)
+            notifications[1] = id;
+        else if(id.indexOf("facebook") != -1)
+            notifications[2] = id;
+            
+            console.log("====new Noti");
+            console.log(notifications[0]);
+            console.log(notifications[1]);
+            console.log(notifications[2]);
+       
     });
+    
+     router.get('/checkNoti', function(req, res){
+        
+        notifications[0] = null;
+        notifications[1] = null;
+        notifications[2] = null;
+       
+    });
+
+
 
    router.get('/channel', function(req, res){
         var channel_id =req.param("channel_id");

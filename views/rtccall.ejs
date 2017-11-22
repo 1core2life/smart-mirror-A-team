@@ -106,6 +106,8 @@
                  <li>"송신 하기"</li>
                 <li><아이디> 입장</li>
                 
+                <li>끝내기</li>
+                
             </ul>
         </li>
       </ul>
@@ -122,7 +124,7 @@
             data:{
                userName : $('input[name="anotherUserName"]').val()
             },  
-	        url : 'https://smartmirror-cloudserver-corelife.c9users.io/findUser',         //자기 서버 url로 바꾸면 됌. ex) https ----- /findUser
+	        url : 'https://smartmirror-cloud-corelife.c9users.io/findUser',         //자기 서버 url로 바꾸면 됌. ex) https ----- /findUser
 	        dataType : 'json',
 	        success: function(redata){
               var data= redata;
@@ -149,7 +151,7 @@
                 channel_id : channelId,
                 userName :$('input[name="myUserName"]').val()
             },  
-	        url : 'https://smartmirror-cloudserver-corelife.c9users.io/channel',            //자기 서버 url로 바꾸면 됌 ex) https ----- /channel
+	        url : 'https://smartmirror-cloud-corelife.c9users.io/channel',            //자기 서버 url로 바꾸면 됌 ex) https ----- /channel
 	        dataType : 'json',
 	        success: function(redata){
               var data= redata;
@@ -175,7 +177,7 @@
 
     appCaller.on('connectChannel', function(channelId) {
       createChannelId.value = channelId;
-     // inputting(channelId);                                     ===================================================================서버 연결시 작동
+      //inputting(channelId);                     //                ===================================================================서버 연결시 작동
     });
 
     createChannelButton.addEventListener('click', function(e) {

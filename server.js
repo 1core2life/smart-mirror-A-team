@@ -119,32 +119,39 @@ server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
  router.post('/news', function(req, res){
 	       news.news_result(res);
     });  
+    
  router.get('/plan',function(req,res){
-	 fs.readFile('./views/list.html','utf8',function(error,data){
+	 fs.readFile('./views/list.ejs','utf8',function(error,data){
 		 client.query('SELECT * FROM plan',function(error, results){
+		     console.log(results);
 			 res.send(ejs.render(data, {
-				 data: results
+				 mydata: results
 			 }));
 		 });
 	 });
  });
+ 
  router.get('/plan/delete/:date',function(req,res){ 
 	 client.query('DELETE FROM plan WHERE date=?', [req.params.date], function () {
      res.redirect('/plan');
  	 });
  });
+ 
  router.get('/plan/insert',function(req,res){ 
    	fs.readFile('./views/insert_list.html', 'utf8', function (error, data) {
-    res.send(data);
+         res.send(data);
  	 });
  });
+ 
  router.post('/plan/insert',function(req,res){
 	var body = req.body;
+	console.log(body);
   		client.query('INSERT INTO plan (date, schedule) VALUES (?, ?)', [
      	body.date, body.schedule], function () {
         res.redirect('/plan');
  	 });
  });
+ 
  router.get('/plan/edit/:date',function(req,res){
 	fs.readFile('./views/edit_list.html', 'utf8', function (error, data) {
     
